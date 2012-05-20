@@ -5,8 +5,7 @@ var App = Em.Application.create({
 
   ready: function() {
     l(App.name + ' loaded.')
-    App.indices.refresh();
-    setInterval(function() { App.indices.refresh() }, 1000);
+    App.indices.__perform_refresh();
     return this._super()
   ;}
 });
@@ -32,6 +31,15 @@ App.indices = Ember.ArrayController.create({
   },
 
   refresh: function() {
+    clearTimeout(App.indices.poller)
+
+    App.indices.poller = setTimeout(
+      function() { App.indices.__perform_refresh() },
+      1000
+    )
+  },
+
+  __perform_refresh: function() {
     var self = this;
 
     $.getJSON("http://localhost:9200/_cluster/state", function(data) {
@@ -86,5 +94,7 @@ App.indices = Ember.ArrayController.create({
         })
       }
     });
+
+    App.indices.refresh();
   }
 });
