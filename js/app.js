@@ -42,6 +42,8 @@ App.indices = Ember.ArrayController.create({
   __perform_refresh: function() {
     var self = this;
 
+    // Get state information from Cluster State API
+    //
     $.getJSON("http://localhost:9200/_cluster/state", function(data) {
       for (var index_name in data.routing_table.indices) {
 
@@ -92,6 +94,25 @@ App.indices = Ember.ArrayController.create({
             }
           }
         })
+      }
+    });
+
+    // Get stats information from Indices Stats API
+    //
+    $.getJSON("http://localhost:9200/_stats", function(data) {
+      // l(data)
+      for (var index_name in data._all.indices) {
+        var index = self.findProperty("name", index_name)
+        if (!index) return
+
+        // l(data._all.indices[index_name]['primaries'])
+        index
+          .set("size", data._all.indices[index_name]['primaries']['store']['size'])
+          .set("size_in_bytes", data._all.indices[index_name]['primaries']['store']['size_in_bytes'])
+          .set("docs", data._all.indices[index_name]['primaries']['docs']['count'])
+          .set("indexing", data._all.indices[index_name]['primaries']['indexing'])
+          .set("search", data._all.indices[index_name]['primaries']['search'])
+          .set("get", data._all.indices[index_name]['primaries']['get'])
       }
     });
 

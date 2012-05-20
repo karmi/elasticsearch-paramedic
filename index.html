@@ -13,6 +13,7 @@
     {{#each App.indices}}
       <div class="index">
         <p>Name: <strong>{{name}}</strong> <small>(Replicas: {{settings.number_of_replicas}})</small></p>
+        <p>Docs: {{docs}}, Size: {{size}}</p>
         <div class="shard">
           Shards:
           {{#each shards}}
