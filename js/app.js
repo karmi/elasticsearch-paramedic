@@ -6,6 +6,7 @@ var App = Em.Application.create({
   ready: function() {
     l(App.name + ' loaded.')
     App.indices.__perform_refresh();
+    App.nodes.__perform_refresh();
     return this._super()
   ;}
 });
@@ -22,6 +23,50 @@ App.Index.Shard = Ember.Object.extend({
 });
 
 // ===== Controllers ==============================================================================
+
+App.nodes = Ember.ArrayController.create({
+  content: [],
+
+  contains: function(item) {
+    return (Ember.typeOf(item) == 'string') ? this.mapProperty('id').contains(item) : this._super();
+  },
+
+  refresh: function() {
+    clearTimeout(App.nodes.poller)
+    App.nodes.poller = setTimeout( function() { App.nodes.__perform_refresh() }, 1000 )
+  },
+
+  __perform_refresh: function() {
+    var self = this;
+
+    var __load_nodes_info = function(data) {
+      for (var node_name in data.nodes) {
+        if ( !self.contains(node_name) ) self.addObject(App.Node.create({ id: node_name }))
+        var node = self.findProperty("id", node_name)
+                    .set("name", data.nodes[node_name]['name'])
+                    .set("hostname", data.nodes[node_name]['hostname'])
+                    .set("http_address", data.nodes[node_name]['http_address'])
+      }
+
+      // Remove missing nodes from the collection
+      // TODO: Use model instance identity for this
+      //
+      self.forEach(function(item) {
+        var loc = self.content.length || 0
+        while(--loc >= 0) {
+          var curObject = self.content.objectAt(loc)
+          if ( !Ember.keys(data.nodes).contains(item.id) && curObject.id === item.id) {
+            self.content.removeAt(loc)
+          }
+        }
+      })
+
+      App.nodes.refresh();
+    };
+
+    $.getJSON("http://localhost:9200/_cluster/nodes",        __load_nodes_info);
+  }
+});
 
 App.indices = Ember.ArrayController.create({
   content: [],
