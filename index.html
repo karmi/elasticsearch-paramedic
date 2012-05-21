@@ -17,7 +17,14 @@
         <div class="shard">
           Shards:
           {{#each shards}}
-          <p>{{name}} ({{state}}, {{#if primary}} primary {{else}} replica {{/if}})</p>
+          <p>{{name}}
+             [{{state}},
+             {{#if primary}} primary {{else}} replica {{/if}},
+             {{size}},
+             {{docs}} docs,
+             {{recovery.progress}}% loaded in {{recovery.time}}]
+             [Node: {{node_id}}, Relocating node: {{relocating_node_id}}]
+          </p>
           {{/each}}
         </div>
       </div>

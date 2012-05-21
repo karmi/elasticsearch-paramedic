@@ -42,10 +42,10 @@ App.indices = Ember.ArrayController.create({
   __perform_refresh: function() {
     var self = this;
 
-    // Get state information from Cluster State API
+    // Get state information from the Status API
     //
-    $.getJSON("http://localhost:9200/_cluster/state", function(data) {
-      for (var index_name in data.routing_table.indices) {
+    $.getJSON("http://localhost:9200/_status?recovery=true", function(data) {
+      for (var index_name in data.indices) {
 
         // Create or find an index
         //
@@ -55,27 +55,38 @@ App.indices = Ember.ArrayController.create({
         // Update index properties
         //
         index
-          .set("state", data.metadata.indices[index_name]['state'])
-
-          .set("settings", Ember.Object.create({
-            number_of_replicas: data.metadata.indices[index_name]['settings']['index.number_of_replicas']
-          }))
-
-          .set("aliases", data.metadata.indices[index_name]['aliases'])
+          .set("size",          data.indices[index_name]['index']['primary_size'])
+          .set("docs",          data.indices[index_name]['docs']['num_docs'])
 
           .set("shards", function() {
             var shards = []
-            for (var shard_name in data.routing_table.indices[index_name]['shards']) {
+            for (var shard_name in data.indices[index_name]['shards']) {
 
-              data.routing_table.indices[index_name]['shards'][shard_name].forEach(function(shard) {
-                // l(shard)
-                shards.addObject(App.Index.Shard.create({
-                  name: shard.shard,
-                  state: shard.state,
-                  primary: shard.primary,
-                  node_id: shard.node,
-                  relocating_node_id: shard.relocating_node
-                }));
+              data.indices[index_name]['shards'][shard_name].forEach(function(shard_data) {
+                // l(shard_data)
+                var shard = App.Index.Shard.create({
+                  name: shard_name,
+                  state: shard_data.state,
+                  primary: shard_data.routing.primary,
+                  node_id: shard_data.routing.node,
+                  relocating_node_id: shard_data.routing.relocating_node,
+                  size: shard_data.index.size,
+                  docs: shard_data.docs.num_docs
+                });
+                shard
+                  .set("recovery", function() {
+                    var recovery_type = shard_data['gateway_recovery'] ? 'gateway_recovery' : 'peer_recovery'
+
+                    return {
+                      stage:    shard_data[recovery_type].stage,
+                      time:     shard_data[recovery_type].time,
+                      progress: shard_data[recovery_type].index.progress,
+                      size:     shard_data[recovery_type].index.size,
+                      reused_size: shard_data[recovery_type].index.reused_size
+                    }
+                  }())
+
+                shards.addObject(shard);
               });
             }
             return shards.sort(function(a,b) {return a.get('primary') < b.get('primary')})
@@ -89,30 +100,11 @@ App.indices = Ember.ArrayController.create({
           var loc = self.content.length || 0
           while(--loc >= 0) {
             var curObject = self.content.objectAt(loc)
-            if ( !Ember.keys(data.routing_table.indices).contains(item.name) && curObject.name === item.name) {
+            if ( !Ember.keys(data.indices).contains(item.name) && curObject.name === item.name) {
               self.content.removeAt(loc)
             }
           }
         })
-      }
-    });
-
-    // Get stats information from Indices Stats API
-    //
-    $.getJSON("http://localhost:9200/_stats", function(data) {
-      // l(data)
-      for (var index_name in data._all.indices) {
-        var index = self.findProperty("name", index_name)
-        if (!index) return
-
-        // l(data._all.indices[index_name]['primaries'])
-        index
-          .set("size", data._all.indices[index_name]['primaries']['store']['size'])
-          .set("size_in_bytes", data._all.indices[index_name]['primaries']['store']['size_in_bytes'])
-          .set("docs", data._all.indices[index_name]['primaries']['docs']['count'])
-          .set("indexing", data._all.indices[index_name]['primaries']['indexing'])
-          .set("search", data._all.indices[index_name]['primaries']['search'])
-          .set("get", data._all.indices[index_name]['primaries']['get'])
       }
     });
 
