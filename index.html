@@ -8,24 +8,30 @@
 </head>
 <body>
 
+  <h2 class="label">Indices</h2>
   <script type="text/x-handlebars">
     <div id="indices">
     {{#each App.indices}}
-      <div class="index">
-        <p>Name: <strong>{{name}}</strong> <small>(Replicas: {{settings.number_of_replicas}})</small></p>
-        <p>Docs: {{docs}}, Size: {{size}}</p>
-        <div class="shard">
-          Shards:
-          {{#each shards}}
-          <p>{{name}}
-             [{{state}},
-             {{#if primary}} primary {{else}} replica {{/if}},
-             {{size}},
-             {{docs}} docs,
-             {{recovery.progress}}% loaded in {{recovery.time}}]
-             [Node: {{node_id}}, Relocating node: {{relocating_node_id}}]
-          </p>
-          {{/each}}
+      <div class="index clearfix">
+        <div class="basic-info clearfix">
+          <h3>
+            {{name}}
+            <small>{{docs}} docs, {{size}}</small>
+          </h3>
+          <div class="shards">
+            {{#each shards}}
+            <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
+              {{name}}
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        <div class="extra-info shards">
+        {{#each shards}}
+          <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
+              {{name}}
+            </div>
+        {{/each}}
         </div>
       </div>
     {{/each}}
