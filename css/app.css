@@ -39,3 +39,17 @@ h2.label
 
 .index .shard.primary
   { background: #62b9f3; }
+
+.index .shard.STARTED
+  { background: #bbf866; }
+.index .shard.UNASSIGNED
+  { background: #ffea3f; }
+
+.index .shard.primary.STARTED
+  { background: #62b9f3; }
+.index .shard.primary.UNASSIGNED
+  { background: #d82f43; }
+
+.index .node
+  { border: 1px solid #999;
+    padding: 0.5em; }
