@@ -9,11 +9,15 @@
 <body>
   <h2 class="label">Nodes</h2>
   <script type="text/x-handlebars">
-    <div id="nodes">
+    <div id="nodes" class="clearfix">
     {{#each App.nodes}}
-      <div class="node">
-      Id: {{id}},
-      Name: <strong>{{name}}</strong>
+      <div {{bindAttr class=":node master"}}>
+      <h3><span {{bindAttr class="master:icon-star"}}></span> {{name}}</h3>
+      <div class="meta">
+        <p><span class="label">ID: </span>{{id}}</p>
+        <p><span class="label">IP: </span>{{http_address}}</p>
+        <p><span class="label">Hostname: </span>{{hostname}}</p>
+      </div>
       </div>
     {{/each}}
     </div>
@@ -24,18 +28,27 @@
   <script type="text/x-handlebars">
     <div id="indices">
     {{#each App.indices}}
-      <div class="index clearfix">
+      <div {{bindAttr class=":index :clearfix state"}}>
         <div class="basic-info clearfix">
-          <h3>
-            {{name}}
-            <small>{{docs}} docs, {{size}}</small>
-          </h3>
+          <h3>{{name}}</h3>
+
           <div class="shards">
             {{#each shards}}
             <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
               {{name}}
             </div>
             {{/each}}
+          </div>
+
+          <div class="meta">
+            <p>
+              {{settings.number_of_replicas}} replicas,
+              {{docs}} docs,
+              {{size}},
+              {{indexing.index_time}} indexing time,
+              {{search.query_time}} query time,
+              {{state}}
+            </p>
           </div>
         </div>
         <div class="extra-info shards clearfix">
