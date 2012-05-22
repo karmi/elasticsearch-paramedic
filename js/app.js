@@ -5,8 +5,8 @@ var App = Em.Application.create({
 
   ready: function() {
     l(App.name + ' loaded.')
-    App.indices.__perform_refresh();
     App.nodes.__perform_refresh();
+    App.indices.__perform_refresh();
     return this._super()
   ;}
 });
@@ -40,12 +40,12 @@ App.nodes = Ember.ArrayController.create({
     var self = this;
 
     var __load_nodes_info = function(data) {
-      for (var node_name in data.nodes) {
-        if ( !self.contains(node_name) ) self.addObject(App.Node.create({ id: node_name }))
-        var node = self.findProperty("id", node_name)
-                    .set("name", data.nodes[node_name]['name'])
-                    .set("hostname", data.nodes[node_name]['hostname'])
-                    .set("http_address", data.nodes[node_name]['http_address'])
+      for (var node_id in data.nodes) {
+        if ( !self.contains(node_id) ) self.addObject(App.Node.create({ id: node_id }))
+        var node = self.findProperty("id", node_id)
+                    .set("name", data.nodes[node_id]['name'])
+                    .set("hostname", data.nodes[node_id]['hostname'])
+                    .set("http_address", data.nodes[node_id]['http_address'])
       }
 
       // Remove missing nodes from the collection
@@ -55,7 +55,7 @@ App.nodes = Ember.ArrayController.create({
         var loc = self.content.length || 0
         while(--loc >= 0) {
           var curObject = self.content.objectAt(loc)
-          if ( !Ember.keys(data.nodes).contains(item.id) && curObject.id === item.id) {
+          if ( item && !Ember.keys(data.nodes).contains(item.id) && curObject.id === item.id) {
             self.content.removeAt(loc)
           }
         }
@@ -110,18 +110,61 @@ App.indices = Ember.ArrayController.create({
             var shards = []
             for (var shard_name in data.routing_table.indices[index_name]['shards']) {
 
-              data.routing_table.indices[index_name]['shards'][shard_name].forEach(function(shard) {
-                // l(shard)
-                shards.addObject(App.Index.Shard.create({
-                  name: shard.shard,
-                  state: shard.state,
-                  primary: shard.primary,
-                  node_id: shard.node,
-                  relocating_node_id: shard.relocating_node
-                }));
+              data.routing_table.indices[index_name]['shards'][shard_name].forEach(function(s) {
+                var shard = shards.find(
+                    function(item) { return item.node_id && item.name == shard_name && item.node_id == s.node })
+                if (!shard) {
+                  var shard = App.Index.Shard.create({name: shard_name})
+                  shards.addObject(shard)
+                }
+                shard.set("state",   s.state)
+                     .set("primary", s.primary)
+                     .set("index",   s.index)
+                     .set("node_id", s.node)
+                     .set("relocating_node_id", s.relocating_node)
               });
             }
-            return shards.sort(function(a,b) {return a.get('primary') < b.get('primary')})
+            return shards.sort(function(a,b) {return a.get('primary') < b.get('primary') })
+          }())
+
+          .set("nodes", function() {
+            var nodes = []
+            for (var shard_name in data.routing_table.indices[index_name]['shards']) {
+
+              data.routing_table.indices[index_name]['shards'][shard_name].forEach(function(shard_data) {
+                if (shard_data.node) {
+
+                  // Find the node
+                  // var node = App.nodes.content.findProperty("id", shard_data.node)
+                  var node = nodes.findProperty("id", shard_data.node)
+                  if (!node) {
+                    var node = App.Node.create( App.nodes.content.findProperty("id", shard_data.node) )
+                    nodes.addObject(node)
+                  }
+
+                  // Initialize node.shards
+                  if (node && !node.shards) node.set("shards", [])
+
+                  // Find shard in index.shards
+                  var shard = index.shards.find(function(item) {
+                                return item.name == shard_data.shard && item.node_id == shard_data.node && item.index == shard_data.index
+                              })
+
+                  // Remove shard from node.shards
+                  node.shards.forEach(function(item, index) {
+                    if (item.name == shard_data.shard && item.node_id == shard_data.node && item.index == shard_data.index) {
+                        node.shards.removeAt(index)
+                    }
+                  })
+
+                  // Add (possibly updated) shard back into collection
+                  if (shard) { node.shards.addObject(shard) }
+
+                  node.set("shards", node.shards.sort(function(a,b) { return a.name > b.name; }))
+                }
+              });
+            };
+            return nodes
           }())
 
         // Remove deleted indices from the collection
@@ -168,7 +211,7 @@ App.indices = Ember.ArrayController.create({
             // l(shard_data)
             shard
               .set("size", shard_data.index.size)
-              .set("docs", shard_data.docs.num_docs)
+              // .set("docs", shard_data.docs.num_docs)
             shard
               .set("recovery", function() {
                 var recovery_type = shard_data['gateway_recovery'] ? 'gateway_recovery' : 'peer_recovery'
@@ -192,6 +235,6 @@ App.indices = Ember.ArrayController.create({
 
     // Schedule next run
     //
-    // App.indices.refresh();
+    App.indices.refresh();
   }
 });

@@ -38,12 +38,19 @@
             {{/each}}
           </div>
         </div>
-        <div class="extra-info shards">
-        {{#each shards}}
-          <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
-              {{name}}
+        <div class="extra-info shards clearfix">
+          {{#each nodes}}
+          <div class="node">
+            <p>{{name}} <small>({{id}})</small></p>
+            <div class="clearfix">
+              {{#each shards}}
+              <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
+                  {{name}}
+               </div>
+              {{/each}}
             </div>
-        {{/each}}
+          </div>
+          {{/each}}
         </div>
       </div>
     {{/each}}

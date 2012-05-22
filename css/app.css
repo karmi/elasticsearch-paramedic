@@ -5,31 +5,31 @@ h2.label
   { color: #b2b2b2; font-size: 12px; font-weight: 300; text-transform: uppercase; border-bottom: 1px solid #e0e0e0; }
 
 .index
-  { padding: 0.25em 0 0.25em 0;
+  { border-bottom: 1px solid #999;
+    padding: 0.25em 0 0.2em 0;
     margin: 0 0 0 0;
-    border-bottom: 1px solid #999;
     clear: both; }
 
-.index:hover
-  { background-color: #f5f5f5; }
-
 .index .basic-info
-  { /*border-bottom: 1px solid #999;*/
-    margin: 0.5em 0 0 0; }
+  {
+    margin: 0.5em 0 0.5em 0; }
 
 .index .extra-info
-  { display: none; }
+  { /*display: none;*/
+    padding: 0.5em 0 0 0;
+    border-top: 1px solid #e0e0e0;
+    width: 100%; }
 
 .index h3
   { font-size: 14px;
+    margin-right: 0.5em;
     float: left; }
 
 .index h3 small
   { font-weight: normal; }
 
 .index .shards
-  { margin-left: 0.5em;
-    float: left; }
+  { float: left; }
 
 .index .shards .shard
   { background: #ccc;
@@ -51,5 +51,9 @@ h2.label
   { background: #d82f43; }
 
 .index .node
-  { border: 1px solid #999;
-    padding: 0.5em; }
+  { background: #f9f9f9;
+    border: 1px solid #999;
+    border-radius: 5px;
+    padding: 0.5em;
+    margin: 0 0.25em 0.25em 0;
+    float: left; }
