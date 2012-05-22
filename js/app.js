@@ -46,6 +46,8 @@ App.nodes = Ember.ArrayController.create({
                     .set("name", data.nodes[node_id]['name'])
                     .set("hostname", data.nodes[node_id]['hostname'])
                     .set("http_address", data.nodes[node_id]['http_address'])
+                    .set("jvm_heap_max", data.nodes[node_id]['jvm']['mem']['heap_max'])
+                    .set("start_time",   data.nodes[node_id]['jvm']['start_time'])
       }
 
       // Remove missing nodes from the collection
@@ -64,7 +66,7 @@ App.nodes = Ember.ArrayController.create({
       App.nodes.refresh();
     };
 
-    $.getJSON("http://localhost:9200/_cluster/nodes",        __load_nodes_info);
+    $.getJSON("http://localhost:9200/_cluster/nodes?jvm",        __load_nodes_info);
   }
 });
 
@@ -105,7 +107,8 @@ App.indices = Ember.ArrayController.create({
           .set("state", data.metadata.indices[index_name]['state'])
 
           .set("settings", Ember.Object.create({
-            number_of_replicas: data.metadata.indices[index_name]['settings']['index.number_of_replicas']
+            number_of_replicas: data.metadata.indices[index_name]['settings']['index.number_of_replicas'],
+            number_of_shards:   data.metadata.indices[index_name]['settings']['index.number_of_shards']
           }))
 
           .set("aliases", data.metadata.indices[index_name]['aliases'])
@@ -185,7 +188,7 @@ App.indices = Ember.ArrayController.create({
           var loc = self.content.length || 0
           while(--loc >= 0) {
             var curObject = self.content.objectAt(loc)
-            if ( !Ember.keys(data.metadata.indices).contains(item.name) && curObject.name === item.name) {
+            if ( item && !Ember.keys(data.metadata.indices).contains(item.name) && curObject.name === item.name) {
               self.content.removeAt(loc)
             }
           }
@@ -214,26 +217,32 @@ App.indices = Ember.ArrayController.create({
         if (!index) continue
 
         for (var shard_name in data.indices[index_name]['shards']) {
-          var shard = index.shards.findProperty("name", shard_name)
-          if (!shard) continue
+          // var shard = index.shards.findProperty("name", shard_name)
 
           data.indices[index_name]['shards'][shard_name].forEach(function(shard_data) {
-            // l(shard_data)
-            shard
-              .set("size", shard_data.index.size)
-              // .set("docs", shard_data.docs.num_docs)
-            shard
-              .set("recovery", function() {
-                var recovery_type = shard_data['gateway_recovery'] ? 'gateway_recovery' : 'peer_recovery'
+            var shard = index.shards.find(function(item) {
+                                  return item.name == shard_name && item.node_id == shard_data['routing']['node']
+                                })
+            // if (!shard) continue
+            if (shard) {
 
-                return {
-                  stage:    shard_data[recovery_type].stage,
-                  time:     shard_data[recovery_type].time,
-                  progress: shard_data[recovery_type].index.progress,
-                  size:     shard_data[recovery_type].index.size,
-                  reused_size: shard_data[recovery_type].index.reused_size
-                }
-              }())
+              // l(shard_data)
+              shard
+                .set("size", shard_data.index.size)
+                // .set("docs", shard_data.docs.num_docs)
+              shard
+                .set("recovery", function() {
+                  var recovery_type = shard_data['peer_recovery'] ? 'peer_recovery' : 'gateway_recovery'
+
+                  return {
+                    stage:    shard_data[recovery_type].stage,
+                    time:     shard_data[recovery_type].time,
+                    progress: shard_data[recovery_type].index.progress,
+                    size:     shard_data[recovery_type].index.size,
+                    reused_size: shard_data[recovery_type].index.reused_size
+                  }
+                }())
+            }
           });
         }
       }

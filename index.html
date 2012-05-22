@@ -42,6 +42,7 @@
 
           <div class="meta">
             <p>
+              {{settings.number_of_shards}} shards,
               {{settings.number_of_replicas}} replicas,
               {{docs}} docs,
               {{size}},
@@ -54,11 +55,18 @@
         <div class="extra-info shards clearfix">
           {{#each nodes}}
           <div class="node">
-            <p>{{name}} <small>({{id}})</small></p>
+            <h3>{{name}} <small>{{hostname}} {{jvm_heap_max}}</small></h3>
             <div class="clearfix">
               {{#each shards}}
               <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
-                  {{name}}
+                  <h3>{{name}}</h3>
+                  <div class="meta">
+                    <p>{{state}}/{{recovery.stage}}</p>
+                    <p>
+                      {{recovery.time}}
+                      {{recovery.size}}
+                    </p>
+                  </div>
                </div>
               {{/each}}
             </div>
