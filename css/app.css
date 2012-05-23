@@ -78,10 +78,12 @@ header section .label.darker
   { min-width: 12em; }
 
 #indices .index .basic-info .meta
-  { color: #666;
+  { color: #999;
     float: right; }
 #indices .index.close .basic-info .meta
   { color: #999; }
+#indices .index:hover .basic-info .meta
+  { color: #666; }
 
 #indices .index h3
   { font-size: 14px;
