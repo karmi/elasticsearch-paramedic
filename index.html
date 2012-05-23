@@ -7,6 +7,40 @@
   <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 <body>
+  <header class="clearfix">
+    <script type="text/x-handlebars">
+    {{#with App.cluster}}
+
+    <section {{bindAttr class=":cluster_name status"}}>
+      <span class="label">Cluster Name</span>
+      <h1>{{cluster_name}}</h1>
+      <span class="label">Status</span>
+      <span {{bindAttr class=":status status"}}>{{status}}</span>
+      <span class="label">Nodes</span>
+           {{number_of_nodes}}
+      <span class="label">Data Nodes</span>
+           {{number_of_data_nodes}}
+    </section>
+
+    <section>
+      <p><span class="label">Shards</span></p>
+      <p><span class="label darker">Primary</span>
+         {{active_primary_shards}}</p>
+      <p><span class="label darker">Relocating</span>
+         {{relocating_shards}}</p>
+    </section>
+
+    <section>
+    <p><span class="label">&nbsp;</span></p>
+      <p><span class="label darker">Initializing</span>
+         {{initializing_shards}}</p>
+      <p><span class="label darker">Unassigned</span>
+         {{unassigned_shards}}</p>
+    </section>
+
+    {{/with}}
+    </script>
+  </header>
   <h2 class="label">Nodes</h2>
   <script type="text/x-handlebars">
     <div id="nodes" class="clearfix">

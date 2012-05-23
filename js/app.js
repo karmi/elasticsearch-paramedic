@@ -5,6 +5,7 @@ var App = Em.Application.create({
 
   ready: function() {
     l(App.name + ' loaded.')
+    App.cluster.__perform_refresh();
     App.nodes.__perform_refresh();
     App.indices.__perform_refresh();
     return this._super()
@@ -12,6 +13,9 @@ var App = Em.Application.create({
 });
 
 // ===== Models ===================================================================================
+
+App.Cluster = Ember.Object.extend({
+});
 
 App.Node = Ember.Object.extend({
 });
@@ -23,6 +27,26 @@ App.Index.Shard = Ember.Object.extend({
 });
 
 // ===== Controllers ==============================================================================
+
+App.cluster = Ember.Object.create({
+  content: App.Cluster.create({}),
+
+  refresh: function() {
+    clearTimeout(App.cluster.poller)
+    App.cluster.poller = setTimeout( function() { App.cluster.__perform_refresh() }, 1000 )
+  },
+
+  __perform_refresh: function() {
+    var self = this;
+
+    var __load_cluster_info = function(data) {
+      App.cluster.setProperties(data)
+      App.cluster.refresh();
+    }
+
+    $.getJSON("http://localhost:9200/_cluster/health", __load_cluster_info);
+  }
+});
 
 App.nodes = Ember.ArrayController.create({
   content: [],
