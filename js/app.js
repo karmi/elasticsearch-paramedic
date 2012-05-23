@@ -3,6 +3,8 @@ function l(m) { Ember.Logger.log(m); }
 var App = Em.Application.create({
   name: "Paramedic",
 
+  elasticsearch_url: "http://localhost:9200",
+
   ready: function() {
     l(App.name + ' loaded.')
     App.cluster.__perform_refresh();
@@ -44,7 +46,7 @@ App.cluster = Ember.Object.create({
       App.cluster.refresh();
     }
 
-    $.getJSON("http://localhost:9200/_cluster/health", __load_cluster_info);
+    $.getJSON(App.elasticsearch_url+"/_cluster/health", __load_cluster_info);
   }
 });
 
@@ -90,7 +92,7 @@ App.nodes = Ember.ArrayController.create({
       App.nodes.refresh();
     };
 
-    $.getJSON("http://localhost:9200/_cluster/nodes?jvm",        __load_nodes_info);
+    $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm",        __load_nodes_info);
   }
 });
 
@@ -272,9 +274,9 @@ App.indices = Ember.ArrayController.create({
       }
     };
 
-    $.getJSON("http://localhost:9200/_cluster/state",        __load_cluster_state);
-    $.getJSON("http://localhost:9200/_stats",                __load_indices_stats);
-    $.getJSON("http://localhost:9200/_status?recovery=true", __load_indices_status);
+    $.getJSON(App.elasticsearch_url+"/_cluster/state",        __load_cluster_state);
+    $.getJSON(App.elasticsearch_url+"/_stats",                __load_indices_stats);
+    $.getJSON(App.elasticsearch_url+"/_status?recovery=true", __load_indices_status);
 
     // Schedule next run
     //
