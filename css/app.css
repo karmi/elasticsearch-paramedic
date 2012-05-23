@@ -81,7 +81,13 @@ header section .label.darker
   { min-width: 15em; }
 #indices .index:hover .basic-info h3,
 #indices .index.expanded .basic-info h3
-  { text-shadow: #fff 0px 1px 1px; }
+  { text-shadow: #fff 0px 1px 0px; }
+
+#indices .index .basic-info h3 a
+  { color: #444;
+    text-decoration: none; }
+#indices .index:hover .basic-info h3 a
+  { text-decoration: underline; }
 
 #indices .index .basic-info .buttons
   { margin-right: 1em;
