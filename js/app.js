@@ -23,6 +23,9 @@ App.Node = Ember.Object.extend({
 });
 
 App.Index = Ember.Object.extend({
+  url: function() {
+    return App.elasticsearch_url + '/' + this.name + '/_search?pretty'
+  }.property("name").cacheable()
 });
 
 App.Index.Shard = Ember.Object.extend({

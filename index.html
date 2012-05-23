@@ -66,7 +66,7 @@
     {{#with index}}
       <div {{bindAttr class=":index :clearfix state show_detail:expanded"}}>
         <div class="basic-info clearfix">
-          <h3>{{name}}</h3>
+          <h3><a {{bindAttr href="url"}} title="Browse Index">{{name}}</a></h3>
 
           <div class="buttons">
             <button {{action "showDetail" target="App.indices"}}>
