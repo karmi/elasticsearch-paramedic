@@ -71,6 +71,9 @@ header section .label.darker
 
 /* Indices */
 
+#indices
+  { counter-reset: index; }
+
 #indices .index
   { border-bottom: 1px solid #999;
     clear: both; }
@@ -85,7 +88,14 @@ header section .label.darker
   { background-color: #fafafa; }
 
 #indices .index .basic-info h3
-  { min-width: 15em; }
+  { min-width: 15em;
+    counter-increment: index; }
+#indices .index .basic-info h3:before
+  { content: counter(index) ". ";
+    color: #999;
+    font-weight: normal;
+    font-size: 11px; }
+
 #indices .index:hover .basic-info h3,
 #indices .index.expanded .basic-info h3
   { text-shadow: #fff 0px 1px 0px; }
