@@ -112,6 +112,12 @@ App.indices = Ember.ArrayController.create({
     )
   },
 
+  showDetail: function(event) {
+    // l(event.context.name)
+    l(this)
+    event.context.toggleProperty("show_detail")
+  },
+
   __perform_refresh: function() {
     var self = this;
 

@@ -72,10 +72,24 @@ header section .label.darker
   { color: #999; }
 
 #indices .index .basic-info
-  { margin: 0.75em 0 0.5em 0; }
+  { padding: 0.5em 0 0.5em 0; }
+
+#indices .index:hover .basic-info
+  { background-color: #fafafa; }
 
 #indices .index .basic-info h3
-  { min-width: 12em; }
+  { min-width: 15em; }
+#indices .index:hover .basic-info h3,
+#indices .index.expanded .basic-info h3
+  { text-shadow: #fff 0px 1px 1px; }
+
+#indices .index .basic-info .buttons
+  { margin-right: 1em;
+    visibility: hidden; }
+#indices .index:hover .basic-info .buttons,
+#indices .index.expanded  .basic-info.buttons
+  { visibility: visible; }
+
 
 #indices .index .basic-info .meta
   { color: #999;
@@ -98,6 +112,9 @@ header section .label.darker
 
 #indices .index .shards .shard
   { margin: -0.25em 0.25em 0 0; }
+
+#indices .index .buttons
+  { float: left; }
 
 /* Index extra info */
 

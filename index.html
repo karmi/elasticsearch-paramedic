@@ -62,10 +62,17 @@
   <h2 class="label">Indices</h2>
   <script type="text/x-handlebars">
     <div id="indices">
-    {{#each App.indices}}
-      <div {{bindAttr class=":index :clearfix state"}}>
+    {{#each index in App.indices}}
+    {{#with index}}
+      <div {{bindAttr class=":index :clearfix state show_detail:expanded"}}>
         <div class="basic-info clearfix">
           <h3>{{name}}</h3>
+
+          <div class="buttons">
+            <button {{action "showDetail" target="App.indices"}}>
+              {{#if show_detail}}Hide details{{else}}Show details{{/if}}
+            </button>
+          </div>
 
           <div class="shards">
             {{#each shards}}
@@ -87,28 +94,33 @@
             </p>
           </div>
         </div>
-        <div class="extra-info shards clearfix">
-          {{#each nodes}}
-          <div class="node">
-            <h3>{{name}} <small>{{hostname}}</small></h3>
-            <div class="clearfix">
-              {{#each shards}}
-              <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
-                  <h3>{{name}}</h3>
-                  <div class="meta">
-                    <p>{{state}}/{{recovery.stage}}</p>
-                    <p>
-                      {{recovery.time}}
-                      {{recovery.size}}
-                    </p>
-                  </div>
-               </div>
-              {{/each}}
+
+        <!-- Shard Allocation -->
+        {{#if show_detail}}
+          <div class="extra-info shards clearfix">
+            {{#each nodes}}
+            <div class="node">
+              <h3>{{name}} <small>{{hostname}}</small></h3>
+              <div class="clearfix">
+                {{#each shards}}
+                <div {{bindAttr class=":shard primary state recovery.stage" title="state"}}>
+                    <h3>{{name}}</h3>
+                    <div class="meta">
+                      <p>{{state}}/{{recovery.stage}}</p>
+                      <p>
+                        {{recovery.time}}
+                        {{recovery.size}}
+                      </p>
+                    </div>
+                 </div>
+                {{/each}}
+              </div>
             </div>
+            {{/each}}
           </div>
-          {{/each}}
-        </div>
+        {{/if}}
       </div>
+    {{/with}}
     {{/each}}
     </ul>
   </script>
