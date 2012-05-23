@@ -95,7 +95,21 @@ App.nodes = Ember.ArrayController.create({
       App.nodes.refresh();
     };
 
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm",        __load_nodes_info);
+    var __load_nodes_stats = function(data) {
+      for (var node_id in data.nodes) {
+        var node = self.findProperty("id", node_id)
+        if (node) {
+          node
+            .set("disk", data.nodes[node_id]['indices']['store']['size'])
+            .set("docs", data.nodes[node_id]['indices']['docs']['count'])
+            .set("load", data.nodes[node_id]['os']['load_average'][0])
+            .set("cpu",  data.nodes[node_id]['process']['cpu']['percent'])
+        }
+      }
+    };
+
+    $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm", __load_nodes_info);
+    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process", __load_nodes_stats);
   }
 });
 
