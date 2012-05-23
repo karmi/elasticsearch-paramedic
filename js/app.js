@@ -306,3 +306,10 @@ App.indices = Ember.ArrayController.create({
     App.indices.refresh();
   }
 });
+
+App.addObserver('elasticsearch_url', function() {
+  l("ElasticSearch URL changed to " + this.get("elasticsearch_url"))
+  App.cluster.set("content", App.Cluster.create({}))
+  App.nodes.set("content", [])
+  App.indices.set("content", [])
+});

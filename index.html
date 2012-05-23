@@ -14,12 +14,15 @@
     <section {{bindAttr class=":cluster_name status"}}>
       <span class="label">Cluster Name</span>
       <h1>{{cluster_name}}</h1>
-      <span class="label">Status</span>
-      <span {{bindAttr class=":status status"}}>{{status}}</span>
-      <span class="label">Nodes</span>
-           {{number_of_nodes}}
-      <span class="label">Data Nodes</span>
-           {{number_of_data_nodes}}
+
+      <p>
+        <span class="label">Status</span>
+          <span {{bindAttr class=":status status"}}>{{status}}</span>
+         <span class="label">Nodes</span>
+          {{number_of_nodes}}
+         <span class="label">Data Nodes</span>
+          {{number_of_data_nodes}}
+      </p>
     </section>
 
     <section>
@@ -31,12 +34,20 @@
     </section>
 
     <section>
-    <p><span class="label">&nbsp;</span></p>
+      <p><span class="label">&nbsp;</span></p>
       <p><span class="label darker">Initializing</span>
          {{initializing_shards}}</p>
       <p><span class="label darker">Unassigned</span>
          {{unassigned_shards}}</p>
     </section>
+
+    <section>
+      <p title="Change ElasticSearch URL">
+        <span class="label">URL</span>
+        {{view Ember.TextField valueBinding="App.elasticsearch_url" id="elasticsearch_url"}}
+      </p>
+    </section>
+
 
     {{/with}}
     </script>

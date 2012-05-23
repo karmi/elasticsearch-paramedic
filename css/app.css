@@ -1,7 +1,8 @@
 /* Common */
 
 body
-  { margin: 2em; }
+  { font-family: 'Helvetica Neue', Helvetica, sans-serif;
+    margin: 2em; }
 
 h2.label
   { color: #b2b2b2; font-size: 12px; font-weight: 300; text-transform: uppercase; border-bottom: 1px solid #e0e0e0; }
@@ -25,7 +26,13 @@ header section
 header section.cluster_name
   { width: 40em; }
 
-header section.cluster_name .status
+header section #elasticsearch_url
+  { font: bolder 12px 'Helvetica Neue', Helvetica, sans-serif;
+    border: none;
+    border-bottom: 1px dotted #ccc;
+    width: 30em;}
+
+header section .status
   { background: #f5f5f5;
     font-weight: bolder;
     font-size: 12px;
@@ -33,13 +40,13 @@ header section.cluster_name .status
     text-transform: uppercase;
     padding: 0.25em 0.5em 0.25em 0.45em;
     border-radius: 0.25em; }
-header section.cluster_name .status.green
+header section .status.green
   { color: #fff;
     background: #97f218; }
-header section.cluster_name .status.yellow
+header section .status.yellow
   { color: #fff;
     background: #f2bc18; }
-header section.cluster_name .status.red
+header section .status.red
   { color: #fff;
     background: #f2184f; }
 
