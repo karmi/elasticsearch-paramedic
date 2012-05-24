@@ -3,16 +3,32 @@ function l(m) { Ember.Logger.log(m); }
 var App = Em.Application.create({
   name: "Paramedic",
 
-  elasticsearch_url: "http://localhost:9200",
-
   ready: function() {
     l(App.name + ' loaded.')
-    App.cluster.__perform_refresh();
-    App.nodes.__perform_refresh();
-    App.indices.__perform_refresh();
+    App.cluster.__perform_refresh()
+    App.nodes.__perform_refresh()
+    App.indices.__perform_refresh()
     return this._super()
-  ;}
+  },
+
+  elasticsearch_url: "http://localhost:9200",
+
+  refresh_intervals : Ember.ArrayController.create({
+    content: [
+      {label: '1 sec',  value: 1000},
+      {label: '5 sec',  value: 5000},
+      {label: '15 sec', value: 15*1000},
+      {label: '1 min',  value: 60*1000},
+      {label: '5 min',  value: 5*60*1000},
+      {label: '15 min', value: 15*60*1000}
+    ]
+  }),
+
+  refresh_allowed : true
 });
+
+// App.set("refresh_interval", App.refresh_intervals[0]);
+App.refresh_interval = App.refresh_intervals.toArray()[0]
 
 // ===== Models ===================================================================================
 
@@ -38,10 +54,11 @@ App.cluster = Ember.Object.create({
 
   refresh: function() {
     clearTimeout(App.cluster.poller)
-    App.cluster.poller = setTimeout( function() { App.cluster.__perform_refresh() }, 1000 )
+    App.cluster.poller = setTimeout( function() { App.cluster.__perform_refresh() }, App.refresh_interval.value )
   },
 
   __perform_refresh: function() {
+    if (!App.refresh_allowed) { return }
     var self = this;
 
     var __load_cluster_info = function(data) {
@@ -62,10 +79,11 @@ App.nodes = Ember.ArrayController.create({
 
   refresh: function() {
     clearTimeout(App.nodes.poller)
-    App.nodes.poller = setTimeout( function() { App.nodes.__perform_refresh() }, 1000 )
+    App.nodes.poller = setTimeout( function() { App.nodes.__perform_refresh() }, App.refresh_interval.value )
   },
 
   __perform_refresh: function() {
+    if (!App.refresh_allowed) { return }
     var self = this;
 
     var __load_nodes_info = function(data) {
@@ -123,10 +141,7 @@ App.indices = Ember.ArrayController.create({
   refresh: function() {
     clearTimeout(App.indices.poller)
 
-    App.indices.poller = setTimeout(
-      function() { App.indices.__perform_refresh() },
-      1000
-    )
+    App.indices.poller = setTimeout( function() { App.indices.__perform_refresh() }, App.refresh_interval.value )
   },
 
   showDetail: function(event) {
@@ -136,6 +151,7 @@ App.indices = Ember.ArrayController.create({
   },
 
   __perform_refresh: function() {
+    if (!App.refresh_allowed) { return }
     var self = this;
 
     var __load_cluster_state = function(data) {
@@ -314,9 +330,32 @@ App.indices = Ember.ArrayController.create({
   }
 });
 
+// ===== Views ==================================================================================
+
+App.toggleRefreshAllowedButton = Ember.View.create({
+  text: 'Stop',
+
+  toggle: function(event) {
+    this.set("text", ( App.refresh_allowed == true ) ? 'Start' : 'Stop')
+    App.toggleProperty("refresh_allowed")
+  }
+});
+
+
+// ===== Observers ==============================================================================
+
 App.addObserver('elasticsearch_url', function() {
   l("ElasticSearch URL changed to " + this.get("elasticsearch_url"))
   App.cluster.set("content", App.Cluster.create({}))
   App.nodes.set("content", [])
   App.indices.set("content", [])
+});
+
+App.addObserver('refresh_interval', function() {
+  l("Refresh interval changed to " + App.refresh_interval.label)
+  App.ready()
+});
+
+App.addObserver('refresh_allowed', function() {
+  App.ready()
 });

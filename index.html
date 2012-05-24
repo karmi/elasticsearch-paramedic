@@ -25,7 +25,7 @@
       </p>
     </section>
 
-    <section>
+    <section class="shards">
       <p><span class="label">Shards</span></p>
       <p><span class="label darker">Primary</span>
          {{active_primary_shards}}</p>
@@ -33,7 +33,7 @@
          {{relocating_shards}}</p>
     </section>
 
-    <section>
+    <section class="shards">
       <p><span class="label">&nbsp;</span></p>
       <p><span class="label darker">Initializing</span>
          {{initializing_shards}}</p>
@@ -41,10 +41,22 @@
          {{unassigned_shards}}</p>
     </section>
 
-    <section>
+    <section class="endpoint">
       <p title="Change ElasticSearch URL">
         <span class="label">URL</span>
         {{view Ember.TextField valueBinding="App.elasticsearch_url" id="elasticsearch_url"}}
+      </p>
+
+      <p class="refresh">
+        <span class="refresh-label">Refresh every</span>
+        <span class="refresh-controls">
+          {{view Ember.Select
+                 contentBinding="App.refresh_intervals"
+                 selectionBinding="App.refresh_interval"
+                 optionLabelPath="content.label"
+                 optionValuePath="content.value"}}
+          <button {{action "toggle" target="App.toggleRefreshAllowedButton"}}>{{App.toggleRefreshAllowedButton.text}}</button>
+        </span>
       </p>
     </section>
 

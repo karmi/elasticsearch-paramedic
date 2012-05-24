@@ -31,12 +31,35 @@ header section
 
 header section.cluster_name
   { width: 40em; }
+header section.endpoint
+  { width: 30em; }
 
 header section #elasticsearch_url
-  { font: bolder 12px 'Helvetica Neue', Helvetica, sans-serif;
+  { font: bolder 13px 'Helvetica Neue', Helvetica, sans-serif;
     border: none;
     border-bottom: 1px dotted #ccc;
     width: 30em;}
+
+header section p.refresh .refresh-label
+  { color: #999;
+    margin-top: 0.5em;
+    display: inline-block; }
+header section p.refresh:hover .refresh-label
+  { color: #666; }
+
+header section p.refresh .refresh-controls
+  { color: #999;
+    position: relative;
+    top: -0.15em;
+    display: inline-block; }
+header section p.refresh .refresh-controls button,
+header section p.refresh .refresh-controls select
+  { color: #999;
+    -webkit-text-fill-color: #999; }
+header section p.refresh:hover .refresh-controls button,
+header section p.refresh:hover .refresh-controls select
+  { color: #333;
+    -webkit-text-fill-color: #333; }
 
 header section .status
   { background: #f5f5f5;
