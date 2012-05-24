@@ -22,7 +22,7 @@ svg
   { stroke: #000;
     shape-rendering: crispEdges; }
 
-.horizon 
+.horizon
   { border-bottom: solid 1px #000;
     overflow: hidden;
     position: relative; }
