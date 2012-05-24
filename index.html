@@ -113,6 +113,9 @@
         <!-- Shard Allocation -->
         {{#if show_detail}}
           <div class="extra-info shards clearfix">
+            {{#unless show_detail_loaded}}
+            <div class="loading">Waiting for data...</div>
+            {{/unless}}
             {{#each nodes}}
             <div class="node">
               <h3>{{name}} <small>{{hostname}}</small></h3>
