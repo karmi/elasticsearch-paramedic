@@ -61,6 +61,26 @@ header section p.refresh:hover .refresh-controls select
   { color: #333;
     -webkit-text-fill-color: #333; }
 
+header section.endpoint .icon-refresh
+  { position: relative;
+    width: 14px;
+    height: 14px;
+    opacity: 0.2; }
+
+header section.endpoint.polling-active .icon-refresh
+  { opacity: 0.4; }
+
+header section.endpoint.polling-in-progress .icon-refresh
+  { opacity: 0.5;
+    -webkit-animation-name: rotateRefreshIcon;
+    -webkit-animation-duration:1s;
+    -webkit-animation-iteration-count:infinite;
+    -webkit-animation-timing-function:linear; }
+
+@-webkit-keyframes rotateRefreshIcon
+  { from {-webkit-transform: rotate(0deg);}
+    to   {-webkit-transform: rotate(360deg);} }
+
 header section .status
   { background: #f5f5f5;
     font-weight: bolder;

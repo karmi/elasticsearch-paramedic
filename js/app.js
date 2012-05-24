@@ -27,8 +27,7 @@ var App = Em.Application.create({
   refresh_allowed : true
 });
 
-// App.set("refresh_interval", App.refresh_intervals[0]);
-App.refresh_interval = App.refresh_intervals.toArray()[0]
+App.refresh_interval = App.refresh_intervals.toArray()[1]
 
 // ===== Models ===================================================================================
 
@@ -54,6 +53,7 @@ App.cluster = Ember.Object.create({
 
   refresh: function() {
     clearTimeout(App.cluster.poller)
+    setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.cluster.poller = setTimeout( function() { App.cluster.__perform_refresh() }, App.refresh_interval.value )
   },
 
@@ -66,6 +66,7 @@ App.cluster = Ember.Object.create({
       App.cluster.refresh();
     }
 
+    App.set("refreshing", true)
     $.getJSON(App.elasticsearch_url+"/_cluster/health", __load_cluster_info);
   }
 });
@@ -79,6 +80,7 @@ App.nodes = Ember.ArrayController.create({
 
   refresh: function() {
     clearTimeout(App.nodes.poller)
+    setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.nodes.poller = setTimeout( function() { App.nodes.__perform_refresh() }, App.refresh_interval.value )
   },
 
@@ -126,6 +128,7 @@ App.nodes = Ember.ArrayController.create({
       }
     };
 
+    App.set("refreshing", true)
     $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm", __load_nodes_info);
     $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process", __load_nodes_stats);
   }
@@ -140,7 +143,7 @@ App.indices = Ember.ArrayController.create({
 
   refresh: function() {
     clearTimeout(App.indices.poller)
-
+    setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.indices.poller = setTimeout( function() { App.indices.__perform_refresh() }, App.refresh_interval.value )
   },
 
@@ -320,6 +323,7 @@ App.indices = Ember.ArrayController.create({
       }
     };
 
+    App.set("refreshing", true)
     $.getJSON(App.elasticsearch_url+"/_cluster/state",        __load_cluster_state);
     $.getJSON(App.elasticsearch_url+"/_stats",                __load_indices_stats);
     $.getJSON(App.elasticsearch_url+"/_status?recovery=true", __load_indices_status);
