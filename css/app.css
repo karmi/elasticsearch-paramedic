@@ -254,3 +254,30 @@ header section .label.darker
     float: left; }
 #indices .extra-info .node .shard .meta
   { margin: 0.75em 0 0 2.25em; }
+
+/* Cubism */
+
+#cubism
+  { font-weight: 300;
+    margin: 0 0 1em 0; }
+#cubism .horizon:hover
+  { background-color: #fafafa; }
+#cubism .horizon:hover .title
+  { opacity: 0.99; }
+#cubism:hover .axis text { fill: #333; }
+#cubism .axis { border-color: #999 !important; }
+#cubism .axis path, #cubism .axis line { stroke: #999; }
+#cubism .axis text { fill: #999; }
+#cubism .horizon
+  { border-color: #999; }
+#cubism .horizon .title,
+#cubism .horizon .value
+  { font-size: 12px;
+    top: -2px;
+    text-shadow: rgba(255, 255, 255, 0.9) 0.1em 0.1em 0.09em !important; }
+#cubism .horizon .title
+  { font-weight: normal;
+    opacity: 0.9;
+    margin-left: 0; }
+#cubism .horizon .value
+  { font-weight: bolder; }
