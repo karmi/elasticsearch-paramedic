@@ -354,6 +354,7 @@ App.addObserver('elasticsearch_url', function(event) {
   App.nodes.set("content", [])
   App.indices.set("content", [])
   App.ready()
+  App.Cubism.reset();
 });
 
 App.addObserver('refresh_interval', function() {
