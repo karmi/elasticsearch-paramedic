@@ -70,7 +70,12 @@
   </header>
 
   <section id="cubism">
-    <h2 class="label">Stats</h2>
+    <script type="text/x-handlebars">
+    <h2 class="label clear">
+      Stats
+      <small><a {{action "toggle" target="App.toggleChart"}}>{{App.toggleChart.text}}</a></small>
+    </h2>
+    </script>
     <div id="chart"></div>
   </section>
 

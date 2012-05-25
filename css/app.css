@@ -260,6 +260,14 @@ header section .label.darker
 #cubism
   { font-weight: 300;
     margin: 0 0 1em 0; }
+#cubism h2 a
+  { color: #999;
+    text-transform: none;
+    float: right; }
+#cubism h2 a:hover
+  { color: #666;
+    border-bottom: 1px solid #666;
+    cursor: pointer; }
 #cubism .horizon:hover
   { background-color: #fafafa; }
 #cubism .horizon:hover .title

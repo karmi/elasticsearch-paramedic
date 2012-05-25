@@ -8,6 +8,7 @@ var App = Em.Application.create({
     App.cluster.__perform_refresh()
     App.nodes.__perform_refresh()
     App.indices.__perform_refresh()
+    App.Cubism.setup();
     return this._super()
   },
 
@@ -24,7 +25,7 @@ var App = Em.Application.create({
     ]
   }),
 
-  refresh_allowed : true
+  refresh_allowed: true
 });
 
 App.refresh_interval = App.refresh_intervals.toArray()[1]
@@ -342,6 +343,17 @@ App.toggleRefreshAllowedButton = Ember.View.create({
   toggle: function(event) {
     this.set("text", ( App.refresh_allowed == true ) ? 'Start' : 'Stop')
     App.toggleProperty("refresh_allowed")
+  }
+});
+
+App.toggleChart = Ember.View.create({
+  text: 'Hide',
+
+  toggle: function(event) {
+    var chart   = $("#chart"),
+        visible = chart.is(":visible")
+    this.set("text", visible ? 'Show' : 'Hide')
+    visible ? chart.hide('fast') : chart.show('fast')
   }
 });
 
