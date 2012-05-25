@@ -4,7 +4,7 @@ var App = Em.Application.create({
   name: "Paramedic",
 
   ready: function() {
-    l(App.name + ' loaded.')
+    l(App.name + ' (re)loaded.')
     App.cluster.__perform_refresh()
     App.nodes.__perform_refresh()
     App.indices.__perform_refresh()
@@ -345,18 +345,19 @@ App.toggleRefreshAllowedButton = Ember.View.create({
   }
 });
 
-
 // ===== Observers ==============================================================================
 
-App.addObserver('elasticsearch_url', function() {
-  l("ElasticSearch URL changed to " + this.get("elasticsearch_url"))
+App.addObserver('elasticsearch_url', function(event) {
+  // TODO: Use the `blur` event, so we're not trying to load partial URLs
+  Ember.Logger.log("ElasticSearch URL changed to " + this.get("elasticsearch_url"))
   App.cluster.set("content", App.Cluster.create({}))
   App.nodes.set("content", [])
   App.indices.set("content", [])
+  App.ready()
 });
 
 App.addObserver('refresh_interval', function() {
-  l("Refresh interval changed to " + App.refresh_interval.label)
+  Ember.Logger.log("Refresh interval changed to " + App.refresh_interval.label)
   App.ready()
 });
 
