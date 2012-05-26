@@ -35,14 +35,16 @@ App.Cubism = Ember.Object.create({
     var self = this
 
     // Top axis
-    self.chart.append("div")
-      .attr("class", "axis top")
-      .call(self.context.axis().orient("top"));
+    if ( d3.select("#chart .axis.top").empty() )
+      self.chart.append("div")
+        .attr("class", "axis top")
+        .call(self.context.axis().orient("top"));
 
     // Rule
-    self.chart.append("div")
-          .attr("class", "rule")
-          .call(self.context.rule());
+    if ( d3.select("#chart .rule").empty() )
+      self.chart.append("div")
+            .attr("class", "rule")
+            .call(self.context.rule());
 
     // Move the rule with mouse
     self.context.on("focus", function(i) { d3.selectAll(".value").style("right", i == null ? null : self.context.size() - i + "px"); })
