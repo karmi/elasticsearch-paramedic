@@ -32,7 +32,7 @@ namespace :index do
     trap(:INT) { exit }
     INDEX = ENV['INDEX'] || 'index_1'
     loop do
-      Tire.search(INDEX) { query { all } }.results
+      Tire.search(INDEX) { query { string 'tes*' } }.results
       print '.'
       sleep 0.2
     end
