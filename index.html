@@ -111,9 +111,11 @@
           <h3><a {{bindAttr href="url"}} title="Browse Index">{{name}}</a></h3>
 
           <div class="buttons">
+            {{#unless closed}}
             <button {{action "showDetail" target="App.indices"}}>
               {{#if show_detail}}Hide details{{else}}Show details{{/if}}
             </button>
+            {{/unless}}
           </div>
 
           <div class="shards">

@@ -127,8 +127,9 @@ header section .label.darker
   { border-bottom: 1px solid #999;
     clear: both; }
 
-#indices .index.close
-  { color: #999; }
+#indices .index.close,
+#indices .index.close a
+  { color: #999 !important; }
 
 #indices .index .basic-info
   { padding: 0.5em 0 0.5em 0; }
@@ -170,6 +171,8 @@ header section .label.darker
   { color: #999; }
 #indices .index:hover .basic-info .meta
   { color: #666; }
+#indices .index.close:hover .basic-info .meta
+  { color: #999; }
 
 #indices .index h3
   { font-size: 14px;
