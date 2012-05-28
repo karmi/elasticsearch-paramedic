@@ -189,29 +189,58 @@ App.indices = Ember.ArrayController.create({
 
           .set("aliases", data.metadata.indices[index_name]['aliases'])
 
+        // Shards
+        //
+        var shards     = [],
+                  primaries  = [],
+                  replicas   = [],
+                  unassigned = []
+
+        index
           .set("shards", function() {
-            var shards = []
             if (data.routing_table.indices[index_name]) {
 
               for (var shard_name in data.routing_table.indices[index_name]['shards']) {
 
                 data.routing_table.indices[index_name]['shards'][shard_name].forEach(function(s) {
-                  var shard = shards.find(
-                      function(item) { return item.node_id && item.name == shard_name && item.node_id == s.node })
-                  if (!shard) {
-                    var shard = App.Index.Shard.create({name: shard_name})
-                    shards.addObject(shard)
-                  }
+
+                  var shard = App.Index.Shard.create({name: shard_name})
                   shard.set("state",   s.state)
                        .set("primary", s.primary)
                        .set("index",   s.index)
                        .set("node_id", s.node)
                        .set("relocating_node_id", s.relocating_node)
+
+                  if (s.primary)             primaries .addObject(shard)
+                  if (!s.primary && s.node)  replicas  .addObject(shard)
+                  if (!s.primary && !s.node) unassigned.addObject(shard)
                 });
 
               }
             }
-            return shards.sort(function(a,b) {return a.get('primary') < b.get('primary') })
+
+            // Sort unassingned shards to series [0 .. n, 0 .. n]
+            // [0, 0, 1, 1, 2, 2] becomes: [0, 1, 2, 0, 1, 2]
+            //
+            var unassigned_sorted = []
+            unassigned_sorted.length = unassigned.length
+
+            var num_shards   = primaries.length,
+                num_replicas = unassigned.length/num_shards;
+
+            for (var i = 0; i < num_shards; i++) {
+              // Create slices: [0, 0]; [1, 1]; [2, 2]
+              unassigned.slice(i*num_replicas, i*num_replicas+num_replicas).forEach(function(item,index) {
+                // Position for first slices:  0, 3
+                // Position for second slices: 1, 4
+                // Position for third slices:  2, 5
+                var position = i + num_shards * index
+                unassigned_sorted[position] = item
+              })
+            };
+
+            unassigned_sorted = unassigned_sorted.filter(function(i){return i != null})
+            return shards.concat(primaries, replicas, unassigned_sorted)
           }())
 
           if (index.show_detail) {
