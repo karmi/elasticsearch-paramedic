@@ -104,7 +104,7 @@
   <h2 class="label">Indices</h2>
   <script type="text/x-handlebars">
     <div id="indices">
-    {{#each index in App.indices}}
+    {{#each index in App.indices.sorted}}
     {{#with index}}
       <div {{bindAttr class=":index :clearfix state show_detail:expanded"}}>
         <div class="basic-info clearfix">

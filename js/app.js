@@ -108,7 +108,7 @@ App.nodes = Ember.ArrayController.create({
       }
 
       // Remove missing nodes from the collection
-      // TODO: Use model instance identity for this
+      // TODO: Use model instance identity, contains(), etc
       //
       self.forEach(function(item) {
         var loc = self.content.length || 0
@@ -154,6 +154,12 @@ App.indices = Ember.ArrayController.create({
     setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.indices.poller = setTimeout( function() { App.indices.__perform_refresh() }, App.refresh_interval.value )
   },
+
+  sorted: function() {
+    return this.get("content")
+             .toArray()
+             .sort(function(a,b) { if (a.name < b.name) return -1; if (a.name > b.name) return 1; return 0; })
+  }.property("content.@each").cacheable(),
 
   showDetail: function(event) {
     // l(event.context.name)
@@ -302,8 +308,6 @@ App.indices = Ember.ArrayController.create({
           }
         })
 
-        // TODO: Sort indices by name
-        // self.set( "content", self.content.sort(function(a,b) { return a.name > b.name }) )
       }
     };
 
