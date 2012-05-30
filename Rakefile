@@ -12,22 +12,24 @@ namespace :index do
   task :create do
     1.upto(COUNT) do |i|
       print "#{i}. "
-      Tire.index("index_#{i}") do
-        create
-        store title: "Test doc"
-      end
+      Timeout::timeout(0.25) do
+        Tire.index("index_#{i}") do
+          create settings: { number_of_shards: 3, number_of_replicas: 1 }
+          store  title: "Test doc"
+        end
+      end rescue Timeout::Error
     end
   end
 
   desc "Remove indices (pass LEAVE in ENV)"
   task :remove do
-    COUNT.downto(LEAVE) do |i|
+    COUNT.downto(LEAVE+1) do |i|
       print "#{i}. "
       Tire.index("index_#{i}").delete
     end
   end
 
-  desc "Search an index in loop"
+  desc "Search an index in a loop"
   task :search do
     trap(:INT) { exit }
     INDEX = ENV['INDEX'] || 'index_1'
