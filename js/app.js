@@ -100,8 +100,8 @@ App.nodes = Ember.ArrayController.create({
       for (var node_id in data.nodes) {
         if ( !self.contains(node_id) ) self.addObject(App.Node.create({ id: node_id }))
         var node = self.findProperty("id", node_id)
-                    .set("name", data.nodes[node_id]['name'])
-                    .set("hostname", data.nodes[node_id]['hostname'])
+                    .set("name",         data.nodes[node_id]['name'])
+                    .set("hostname",     data.nodes[node_id]['hostname'])
                     .set("http_address", data.nodes[node_id]['http_address'])
                     .set("jvm_heap_max", data.nodes[node_id]['jvm']['mem']['heap_max'])
                     .set("start_time",   data.nodes[node_id]['jvm']['start_time'])
@@ -132,13 +132,14 @@ App.nodes = Ember.ArrayController.create({
             .set("docs", data.nodes[node_id]['indices']['docs']['count'])
             .set("load", data.nodes[node_id]['os']['load_average'][0])
             .set("cpu",  data.nodes[node_id]['process']['cpu']['percent'])
+            .set("jvm_heap_used", data.nodes[node_id]['jvm']['mem']['heap_used'])
         }
       }
     };
 
     App.set("refreshing", true)
     $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm", __load_nodes_info);
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process", __load_nodes_stats);
+    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process&jvm", __load_nodes_stats);
   }
 });
 
