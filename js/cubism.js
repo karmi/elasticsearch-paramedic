@@ -6,11 +6,7 @@ App.Cubism = Ember.Object.create({
   elasticsearch: {},
 
   // Cubism.js context
-  context: cubism.context()
-             .serverDelay(0)
-             .clientDelay(0)
-             .step(1000)
-             .size($("#chart").width()),
+  context: {},
 
   // Chart canvas
   chart: d3.select("#chart").append("div").attr("id", "chart-inner"),
@@ -34,6 +30,9 @@ App.Cubism = Ember.Object.create({
   setup: function() {
     var self = this
 
+    // Setup context
+    self.__setup_context()
+
     // Top axis
     if ( d3.select("#chart .axis.top").empty() )
       self.chart.append("div")
@@ -49,6 +48,7 @@ App.Cubism = Ember.Object.create({
     // Move the rule with mouse
     self.context.on("focus", function(i) { d3.selectAll(".value").style("right", i == null ? null : self.context.size() - i + "px"); })
 
+    // Draw the chart(s)
     self.__draw()
 
     return self
@@ -58,9 +58,15 @@ App.Cubism = Ember.Object.create({
   reset: function() {
     var self = this
 
+    // Setup context
+    self.context.stop()
+    self.__setup_context()
+
+    // Re-insert the chart element
     d3.select("#chart-inner").remove()
     self.chart = d3.select("#chart").append("div").attr("id", "chart-inner")
 
+    // Re-draw the chart(s)
     self.__draw()
     return self
   },
@@ -79,10 +85,18 @@ App.Cubism = Ember.Object.create({
       { metrics: this.metrics("indices.search.query_current"),   colors: 'YlOrRd'   }
     ].forEach(
         function(group) { self.add_chart(group.metrics, {colors: group.colors}) }
-    );
+    )
 
     return self
   });
+  },
+
+  __setup_context: function() {
+    this.context = cubism.context()
+                     .serverDelay(0)
+                     .clientDelay(0)
+                     .step(1000)
+                     .size($("#chart").width())
   }
 
 });

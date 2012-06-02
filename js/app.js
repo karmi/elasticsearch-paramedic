@@ -407,7 +407,7 @@ App.addObserver('elasticsearch_url', function(event) {
   App.nodes.set("content", [])
   App.indices.set("content", [])
   App.ready()
-  App.Cubism.reset();
+  App.Cubism.reset()
 });
 
 App.addObserver('refresh_interval', function() {
@@ -417,4 +417,12 @@ App.addObserver('refresh_interval', function() {
 
 App.addObserver('refresh_allowed', function() {
   App.ready()
+});
+
+App.nodes.addObserver('@each.name', function() {
+  // Wait until we have node names...
+  if ( !App.nodes.everyProperty("name") ) return;
+
+  Ember.Logger.log("Nodes changed to: " + App.nodes.mapProperty("name").join("; "))
+  App.Cubism.reset()
 });
