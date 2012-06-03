@@ -321,6 +321,9 @@ App.indices = Ember.ArrayController.create({
     };
 
     var __load_indices_stats = function(data) {
+      App.cluster.set("docs_count",
+                      data._all.primaries.docs ? data._all.primaries.docs.count : 0)
+
       for (var index_name in data._all.indices) {
         var index = self.findProperty("name", index_name)
         if (!index) continue
