@@ -5,10 +5,8 @@ var App = Em.Application.create({
 
   ready: function() {
     l(App.name + ' (re)loaded.')
-    App.cluster.__perform_refresh()
-    App.nodes.__perform_refresh()
-    App.indices.__perform_refresh()
-    App.Cubism.setup();
+    App.__perform_refresh()
+    App.__initialize_cubism()
     return this._super()
   },
 
@@ -28,7 +26,17 @@ var App = Em.Application.create({
     ]
   }),
 
-  refresh_allowed: true
+  refresh_allowed: true,
+
+  __perform_refresh: function() {
+    App.cluster.__perform_refresh()
+    App.nodes.__perform_refresh()
+    App.indices.__perform_refresh()
+  },
+
+  __initialize_cubism: function() {
+    App.Cubism.setup()
+  }
 });
 
 App.refresh_interval = App.refresh_intervals.toArray()[1]
@@ -393,6 +401,7 @@ App.toggleChart = Ember.View.create({
   toggle: function(event) {
     var chart   = $("#chart"),
         visible = chart.is(":visible")
+
     this.set("text", visible ? 'Show' : 'Hide')
     visible ? chart.hide('fast') : chart.show('fast')
   }
@@ -416,7 +425,8 @@ App.addObserver('refresh_interval', function() {
 });
 
 App.addObserver('refresh_allowed', function() {
-  App.ready()
+  App.refresh_allowed ? App.Cubism.start() : App.Cubism.stop()
+  App.__perform_refresh()
 });
 
 App.nodes.addObserver('@each.name', function() {

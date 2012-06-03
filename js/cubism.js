@@ -58,17 +58,26 @@ App.Cubism = Ember.Object.create({
   reset: function() {
     var self = this
 
-    // Setup context
-    self.context.stop()
-    self.__setup_context()
+    // Stop old context
+    self.stop()
 
     // Re-insert the chart element
     d3.select("#chart-inner").remove()
     self.chart = d3.select("#chart").append("div").attr("id", "chart-inner")
 
-    // Re-draw the chart(s)
-    self.__draw()
+    // Re-initialize everything
+    self.setup()
     return self
+  },
+
+  // Start the polling/animation
+  start: function() {
+    if (this.context.start) this.context.start()
+  },
+
+  // Stop the polling/animation
+  stop: function() {
+    if (this.context.stop) this.context.stop()
   },
 
   // Draw the metrics
