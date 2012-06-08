@@ -58,9 +58,6 @@ App.Cubism = Ember.Object.create({
   reset: function() {
     var self = this
 
-    // Stop old context
-    self.stop()
-
     // Re-insert the chart element
     d3.select("#chart-inner").remove()
     self.chart = d3.select("#chart").append("div").attr("id", "chart-inner")
