@@ -31,7 +31,7 @@ You can also download or clone this repository and open the `index.html` file in
 
 The easiest way to use Paramedic in production is to install it as an ElasticSearch plugin:
 
-    plugin -install paramedic -url https://github.com/karmi/elasticsearch-paramedic/zipball/master
+    plugin -install paramedic -url https://github.com/downloads/karmi/elasticsearch-paramedic/paramedic.zip
 
 If your cluster is publicly accessible (authenticated with firewall rules or HTTP Authentication via proxy),
 open it in your browser:
