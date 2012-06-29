@@ -28,6 +28,7 @@ var App = Em.Application.create({
   }),
 
   refresh_allowed: true,
+  sounds_enabled:  false,
 
   __perform_refresh: function() {
     App.cluster.__perform_refresh()
@@ -447,6 +448,15 @@ App.nodes.addObserver('@each.name', function() {
 
 App.cluster.addObserver('cluster_name', function() {
   $('title').text('Paramedic | ' + this.get('cluster_name'))
+});
+
+App.cluster.addObserver('status', function() {
+  if (App.get("sounds_enabled")) {
+    // FIXME: When running as a plugin, audio won't play again when `var a = $('#alert-'+this.get("status"))[0]`
+    var a = new Audio('audio/alert-'+this.get("status")+'.mp3')
+    a.volume=0.7
+    a.play()
+  }
 });
 
 // ===== Varia ==================================================================================

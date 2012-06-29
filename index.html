@@ -65,6 +65,10 @@
           <button {{action "toggle" target="App.toggleRefreshAllowedButton"}}>{{App.toggleRefreshAllowedButton.text}}</button>
         </span>
       </p>
+      <p class="alerts">
+        {{view Ember.Checkbox id="sound-enabled" checkedBinding="App.sounds_enabled"}}
+        <label for="sound-enabled" class="dimmed">Sounds?</label>
+      </p>
     </section>
 
 
@@ -174,6 +178,10 @@
     {{/each}}
     </ul>
   </script>
+
+  <audio id="alert-green"  src="audio/alert-green.mp3"></audio>
+  <audio id="alert-yellow" src="audio/alert-yellow.mp3"></audio>
+  <audio id="alert-red"    src="audio/alert-red.mp3"></audio>
 
   <script src="js/libs/jquery-1.7.2.min.js"></script>
   <!-- <script src="js/libs/ember-0.9.8.min.js"></script> -->

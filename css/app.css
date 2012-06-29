@@ -43,6 +43,9 @@ header section #elasticsearch_url
     border-bottom: 1px dotted #ccc;
     width: 30em;}
 
+header section p.refresh
+  { display: inline-block; }
+
 header section p.refresh .refresh-label
   { color: #999;
     margin-top: 0.5em;
@@ -63,6 +66,18 @@ header section p.refresh:hover .refresh-controls button,
 header section p.refresh:hover .refresh-controls select
   { color: #333;
     -webkit-text-fill-color: #333; }
+
+header section p.alerts
+  { margin: 0 0 0 1em;
+    display: inline-block; }
+
+header section p.alerts input
+  { position: relative;
+    top: -0.2em; }
+
+header section p.alerts label
+  { color: #d0d0d0;
+    font-size: 90%; }
 
 header section.endpoint .icon-refresh
   { position: relative;
