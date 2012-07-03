@@ -25,7 +25,7 @@
          <span class="label">Nodes</span>
           {{number_of_nodes}}
          <span class="label">Docs</span>
-          {{docs_count}}
+          {{#bind docs_count}}{{number_with_delimiter docs_count}}{{/bind}}
       </p>
     </section>
 
@@ -98,7 +98,7 @@
         <p><span class="label">Host: </span>{{hostname}}</p>
         <p><span class="label">Load: </span>{{load}}</p>
         <p><span class="label">Size: </span>{{disk}}</p>
-        <p><span class="label">Docs: </span>{{docs}}</p>
+        <p><span class="label">Docs: </span>{{#bind docs}}{{number_with_delimiter docs}}{{/bind}}</p>
         <p><span class="label">Heap: </span>{{jvm_heap_used}}
         <small class="dimmed" title="Heap max">/{{jvm_heap_max}}</small></p>
       </div>
@@ -137,7 +137,7 @@
             <p>
               {{settings.number_of_shards}} shards /
               {{settings.number_of_replicas}} replicas /
-              {{docs}} docs /
+              {{#bind docs}}{{number_with_delimiter docs}}{{/bind}} docs /
               {{size}} /
               {{indexing.index_time}} indexing /
               {{search.query_time}} querying /
