@@ -13,7 +13,11 @@ var App = Em.Application.create({
 
   elasticsearch_url: function() {
     var location = window.location
-    return (/_plugin/.test(location.href.toString())) ? location.protocol + "//" + location.host : "http://localhost:9200"
+    var args = location.search.substring(1).split("&").reduce(function(r, p) {
+        r[decodeURIComponent(p.split("=")[0])] = decodeURIComponent(p.split("=")[1]); return r;
+    }, {});
+    var base_uri = args["base_uri"] || "http://localhost:9200";
+    return (/_plugin/.test(location.href.toString())) ? location.protocol + "//" + location.host : base_uri
   }(),
 
   refresh_intervals : Ember.ArrayController.create({
