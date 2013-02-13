@@ -13,7 +13,7 @@ can't be considered mature enough, yet.
 
 For basic overview, see a screenshot below.
 
-![ElasticSearch Paramedic Screenshot](/karmi/elasticsearch-paramedic/raw/master/elasticsearch-paramedic-screenshot.png)
+![ElasticSearch Paramedic Screenshot](/elasticsearch-paramedic-screenshot.png)
 
 
 Installation
