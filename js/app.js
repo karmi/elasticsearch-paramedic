@@ -16,6 +16,10 @@ var App = Em.Application.create({
     return (/_plugin/.test(location.href.toString())) ? location.protocol + "//" + location.host : "http://localhost:9200"
   }(),
 
+  elasticsearch_node_filter: function () {
+    return location.hash.substring(1);
+  }(),
+
   refresh_intervals : Ember.ArrayController.create({
     content: [
       {label: '1 sec',  value: 1000},
@@ -152,8 +156,8 @@ App.nodes = Ember.ArrayController.create({
     };
 
     App.set("refreshing", true)
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm", __load_nodes_info);
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process&jvm", __load_nodes_stats);
+    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/" + App.elasticsearch_node_filter + "?jvm", __load_nodes_info);
+    $.getJSON(App.elasticsearch_url+"/_nodes/" + App.elasticsearch_node_filter + "stats?indices&os&process&jvm", __load_nodes_stats);
   }
 });
 
