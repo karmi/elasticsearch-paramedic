@@ -330,17 +330,19 @@ App.indices = Ember.ArrayController.create({
       App.cluster.set("docs_count",
                       data._all.primaries.docs ? data._all.primaries.docs.count : 0)
 
-      for (var index_name in data._all.indices) {
+      var indices = data._all.indices || data.indices
+
+      for (var index_name in indices) {
         var index = self.findProperty("name", index_name)
         if (!index) continue
 
         index
-          .set("size", data._all.indices[index_name]['primaries']['store']['size'])
-          .set("size_in_bytes", data._all.indices[index_name]['primaries']['store']['size_in_bytes'])
-          .set("docs", data._all.indices[index_name]['primaries']['docs']['count'])
-          .set("indexing", data._all.indices[index_name]['primaries']['indexing'])
-          .set("search", data._all.indices[index_name]['primaries']['search'])
-          .set("get", data._all.indices[index_name]['primaries']['get'])
+          .set("size", indices[index_name]['primaries']['store']['size'])
+          .set("size_in_bytes", indices[index_name]['primaries']['store']['size_in_bytes'])
+          .set("docs", indices[index_name]['primaries']['docs']['count'])
+          .set("indexing", indices[index_name]['primaries']['indexing'])
+          .set("search", indices[index_name]['primaries']['search'])
+          .set("get", indices[index_name]['primaries']['get'])
       }
     };
 
