@@ -209,7 +209,7 @@ cubism.elasticsearch = function(context, options, callback) {
   // Load information about ElasticSearch nodes from the Nodes Info API
   // [http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-info.html]
   //
-  d3.json(options.host + "/_cluster/nodes", function(cluster) {
+  d3.json(options.host + "/_nodes/" + location.hash.substring(1), function(cluster) {
     source.cluster   = cluster
     source.node_names = d3.keys(cluster.nodes)
 
