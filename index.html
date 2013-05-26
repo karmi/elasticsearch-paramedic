@@ -4,6 +4,7 @@
 <meta charset=utf-8 />
 <title>Paramedic</title>
   <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/application.css">
 </head>
 <body>
 
@@ -17,10 +18,13 @@
 
   <script type="text/x-handlebars" id="index">
     {{#if cluster.isLoaded}}
-    <p>Cluster name: {{cluster.health.cluster_name}}</p>
-    <p {{bindAttr class="cluster.health.status"}}>Status: {{cluster.health.status}}</p>
+      <span class="label">Cluster</span>
+      <strong>{{cluster.health.cluster_name}}</strong>
+
+      <span class="label">Status</span>
+      <small {{bindAttr class=":cluster :status cluster.health.status"}}>{{cluster.health.status}}</small>
     {{else}}
-    <p>Loading...</p>
+      <p class="loading">Loading...</p>
     {{/if}}
   </script>
 
