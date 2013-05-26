@@ -20,5 +20,27 @@
 
   <script src="../js/extensions.js"></script>
   <script src="../js/application.js"></script>
+  <script src="../js/models/cluster.js"></script>
+
+  <script>
+  // Ember.js Qunit extensions
+  var originalSetTimeout = window.setTimeout;
+
+  var wait = function(callback, maxWaitCount) {
+    maxWaitCount = Ember.isNone(maxWaitCount) ? 100 : maxWaitCount;
+
+    originalSetTimeout(function() {
+      if (maxWaitCount > 0 && (Ember.run.hasScheduledTimers() || Ember.run.currentRunLoop)) {
+        wait(callback, maxWaitCount - 1);
+
+        return;
+      }
+
+      callback();
+    }, 10);
+  };
+  </script>
+
+  <script src="./cluster_test.js"></script>
 </body>
 </html>

@@ -6,14 +6,22 @@
   <link rel="stylesheet" href="css/normalize.css">
 </head>
 <body>
-  <h1>Paramedic</h1>
 
-  <div id="main">
-    <script type="text/x-handlebars">{{outlet}}</script>
-  </div>
+  <script type="text/x-handlebars">
+  <header>
+    <h1>Paramedic</h1>
+  </header>
+  <div id="main">{{outlet}}</div>
+  <footer></footer>
+  </script>
 
   <script type="text/x-handlebars" id="index">
-  <p>Index</p>
+    {{#if cluster.isLoaded}}
+    <p>Cluster name: {{cluster.health.cluster_name}}</p>
+    <p {{bindAttr class="cluster.health.status"}}>Status: {{cluster.health.status}}</p>
+    {{else}}
+    <p>Loading...</p>
+    {{/if}}
   </script>
 
   <script src="js/libs/jquery-2.0.1.js"></script>
@@ -21,5 +29,6 @@
   <script src="js/libs/ember-1.0.0-master.js"></script>
   <script src="js/extensions.js"></script>
   <script src="js/application.js"></script>
+  <script src="js/models/cluster.js"></script>
 </body>
 </html>
