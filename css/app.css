@@ -122,6 +122,16 @@ header section .label.darker
 
 /* Nodes */
 
+#nodes-wrapper h2 a
+  { color: #999;
+    text-transform: none;
+    float: right; }
+
+#nodes-wrapper h2 a:hover
+  { color: #666;
+    border-bottom: 1px solid #666;
+    cursor: pointer; }
+
 #nodes .node
   { margin: 0.25em 0.5em 0.25em 0;
     padding: 0.25em 0.5em 0.25em 0;
@@ -137,6 +147,16 @@ header section .label.darker
     padding-right: 0.5em; }
 
 /* Indices */
+
+#indices-wrapper h2 a
+  { color: #999;
+    text-transform: none;
+    float: right; }
+
+#indices-wrapper h2 a:hover
+  { color: #666;
+    border-bottom: 1px solid #666;
+    cursor: pointer; }
 
 #indices
   { counter-reset: index; }

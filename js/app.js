@@ -94,6 +94,7 @@ App.cluster = Ember.Object.create({
 });
 
 App.nodes = Ember.ArrayController.create({
+  hidden: false,
   content: [],
 
   contains: function(item) {
@@ -101,6 +102,8 @@ App.nodes = Ember.ArrayController.create({
   },
 
   refresh: function() {
+    if (App.nodes.hidden) { return }
+
     clearTimeout(App.nodes.poller)
     setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.nodes.poller = setTimeout( function() { App.nodes.__perform_refresh() }, App.refresh_interval.value )
@@ -158,6 +161,7 @@ App.nodes = Ember.ArrayController.create({
 });
 
 App.indices = Ember.ArrayController.create({
+  hidden: false,
   content: [],
 
   contains: function(item) {
@@ -165,6 +169,8 @@ App.indices = Ember.ArrayController.create({
   },
 
   refresh: function() {
+    if (App.indices.hidden) { return }
+
     clearTimeout(App.indices.poller)
     setTimeout(function() { App.set("refreshing", false) }, 1000)
     App.indices.poller = setTimeout( function() { App.indices.__perform_refresh() }, App.refresh_interval.value )
@@ -415,6 +421,30 @@ App.toggleChart = Ember.View.create({
 
     this.set("text", visible ? 'Show' : 'Hide')
     visible ? chart.hide('fast') : chart.show('fast')
+    App.nodes.refresh();
+  }
+});
+
+App.toggleIndices = Ember.View.create({
+  hidden: false,
+  text:   'Hide',
+
+  toggle: function(event) {
+    this.set("text", this.get('hidden') ? 'Hide' : 'Show')
+    this.toggleProperty('hidden')
+    App.indices.toggleProperty('hidden')
+    App.indices.refresh();
+  }
+});
+
+App.toggleNodes = Ember.View.create({
+  hidden: false,
+  text:   'Hide',
+
+  toggle: function(event) {
+    this.set("text", this.get('hidden') ? 'Hide' : 'Show')
+    this.toggleProperty('hidden')
+    App.nodes.toggleProperty('hidden')
   }
 });
 
