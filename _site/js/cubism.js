@@ -83,7 +83,7 @@ App.Cubism = Ember.Object.create({
 
     self.elasticsearch = cubism.elasticsearch(self.context, {host: App.elasticsearch_url}, function() {
     [
-      { metrics: this.metrics("os.cpu.user"),                    colors: 'Greens'   },
+      { metrics: this.metrics("os.cpu_percent"),                 colors: 'Greens'   },
       { metrics: this.metrics("process.cpu.percent"),            colors: 'Greens'   },
       { metrics: this.metrics("jvm.mem.heap_used_in_bytes"),     colors: 'Blues'    },
       { metrics: this.metrics("http.current_open"),              colors: 'Oranges'  },
@@ -106,4 +106,3 @@ App.Cubism = Ember.Object.create({
   }
 
 });
-
