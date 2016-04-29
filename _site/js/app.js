@@ -12,8 +12,9 @@ var App = Em.Application.create({
   },
 
   elasticsearch_url: function() {
-    var location = window.location
-    return (/_plugin/.test(location.href.toString())) ? location.protocol + "//" + location.host : "http://localhost:9200"
+    var href = window.location.href.toString()
+
+    return /_plugin/.test(href) ? href.substring(0, href.indexOf('/_plugin/')) : "http://localhost:9200"
   }(),
 
   refresh_intervals : Ember.ArrayController.create({
@@ -118,9 +119,9 @@ App.nodes = Ember.ArrayController.create({
         if ( !self.contains(node_id) ) self.addObject(App.Node.create({ id: node_id }))
         var node = self.findProperty("id", node_id)
                     .set("name",         data.nodes[node_id]['name'])
-                    .set("hostname",     data.nodes[node_id]['hostname'])
+                    .set("hostname",     data.nodes[node_id]['host'])
                     .set("http_address", data.nodes[node_id]['http_address'])
-                    .set("jvm_heap_max", data.nodes[node_id]['jvm']['mem']['heap_max'])
+                    .set("jvm_heap_max", (data.nodes[node_id]['jvm']['mem']['heap_max_in_bytes']/1000000).toFixed(2) + " MB")
                     .set("start_time",   data.nodes[node_id]['jvm']['start_time'])
       }
 
@@ -145,18 +146,18 @@ App.nodes = Ember.ArrayController.create({
         var node = self.findProperty("id", node_id)
         if (node) {
           node
-            .set("disk", data.nodes[node_id]['indices']['store']['size'])
+            .set("disk", (data.nodes[node_id]['indices']['store']['size_in_bytes']/1000000).toFixed(2) + " MB")
             .set("docs", data.nodes[node_id]['indices']['docs']['count'])
-            .set("load", data.nodes[node_id]['os']['load_average'][0].toFixed(3))
+            .set("load", data.nodes[node_id]['os']['load_average'].toFixed(3))
             .set("cpu",  data.nodes[node_id]['process']['cpu']['percent'])
-            .set("jvm_heap_used", data.nodes[node_id]['jvm']['mem']['heap_used'])
+            .set("jvm_heap_used", (data.nodes[node_id]['jvm']['mem']['heap_used_in_bytes']/1000000).toFixed(2))
         }
       }
     };
 
     App.set("refreshing", true)
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes?jvm", __load_nodes_info);
-    $.getJSON(App.elasticsearch_url+"/_cluster/nodes/stats?indices&os&process&jvm", __load_nodes_stats);
+    $.getJSON(App.elasticsearch_url+"/_nodes?jvm", __load_nodes_info);
+    $.getJSON(App.elasticsearch_url+"/_nodes/stats?indices&os&process&jvm", __load_nodes_stats);
   }
 });
 
@@ -352,7 +353,7 @@ App.indices = Ember.ArrayController.create({
       }
     };
 
-    var __load_indices_status = function(data) {
+    var __load_indices_recovery = function(data) {
       for (var index_name in data.indices) {
         var index = self.findProperty("name", index_name)
         if (!index) continue
@@ -393,7 +394,7 @@ App.indices = Ember.ArrayController.create({
     App.set("refreshing", true)
     $.getJSON(App.elasticsearch_url+"/_cluster/state",        __load_cluster_state);
     $.getJSON(App.elasticsearch_url+"/_stats",                __load_indices_stats);
-    $.getJSON(App.elasticsearch_url+"/_status?recovery=true", __load_indices_status);
+    $.getJSON(App.elasticsearch_url+"/_recovery", __load_indices_recovery);
 
     // Schedule next run
     //

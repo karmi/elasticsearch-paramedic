@@ -15,6 +15,13 @@ For basic overview, see a screenshot below.
 
 ![ElasticSearch Paramedic Screenshot](/elasticsearch-paramedic-screenshot.png)
 
+Versions
+--------
+
+| elasticsearch version | branch | latest version  |
+| --------------------- | ------ | --------------- |
+| 1.X                   | 1.0    | 1.0             |
+| 2.X                   | 2.0    | 2.0             |
 
 Installation
 ------------
@@ -27,11 +34,13 @@ If you have ElasticSearch running on `http://localhost:9200`, you should see the
 You can also download or clone this repository and open the `index.html` file in your browser:
 
     git clone git://github.com/karmi/elasticsearch-paramedic.git && cd elasticsearch-paramedic
+    cd elasticsearch-paramedic
+    git checkout {branch|version}
     open index.html
 
 The easiest way to use Paramedic in production is to install it as an ElasticSearch plugin:
 
-    plugin -install karmi/elasticsearch-paramedic
+    bin/plugin install karmi/elasticsearch-paramedic/{branch|version}
 
 If your cluster is publicly accessible (authenticated with firewall rules or HTTP Authentication via proxy),
 open it in your browser:
